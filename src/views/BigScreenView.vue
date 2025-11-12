@@ -1,7 +1,9 @@
 <script setup>
-import { ref, onMounted } from 'vue'
-import * as echarts from 'echarts'
+// 导入模型解析构造函数
+import { Application } from '@splinetool/runtime'
+import { onMounted, ref } from 'vue'
 import { useGetParkInfo, useInitBarChart, useInitPieChart } from './composables/bigscreen'
+import LoadingComponent from '@/components/LoadingComponent.vue'
 // 1.导入echarts包
 // 2.获取要渲染的dom元素（准备好了宽高、并且已经渲染到页面中）
 // 3.把dom元素传入到echarts.init()  获取echarts实例
@@ -18,10 +20,25 @@ const { barChart, initBarChart } = useInitBarChart(parkInfo)
 // 渲染饼状图
 const { pieChart, initPieChart } = useInitPieChart(parkInfo)
 
+const ref3d = ref(null)
+const isLoading = ref(false)
+const init3D = () => {
+  // 创建解析器的构造函数并且传入要渲染的dom结构
+  const spline = new Application(ref3d.value)
+  isLoading.value = true
+  // 调用后端接口 spline.load()
+  spline.load('https://fe-hmzs.itheima.net/scene.splinecode').then(() => {
+    // 执行then说明 模型已经渲染完毕了
+    console.log('模型渲染完毕了')
+    isLoading.value = false
+  })
+}
+
 onMounted(async () => {
   await getParkInfo()
   initBarChart()
   initPieChart()
+  init3D()
 })
 
 </script>
@@ -97,6 +114,12 @@ onMounted(async () => {
         alt="" />
       <div class="pie-chart" ref="pieChart"></div>
     </div>
+  </div>
+  <div class="model-container">
+    <!-- 进度条 -->
+    <LoadingComponent :loading="isLoading"></LoadingComponent>
+    <!-- 准备3D渲染节点 -->
+    <canvas class="canvas-3d" ref="ref3d" />
   </div>
 </template>
 
@@ -195,5 +218,12 @@ onMounted(async () => {
     width: 80%;
     height: calc(100% - 40px);
   }
+}
+
+.model-container {
+  height: 100%;
+  background-color: black;
+  width: 100%;
+  flex-shrink: 0;
 }
 </style>
