@@ -4,6 +4,7 @@ import { Application } from '@splinetool/runtime'
 import { onMounted, ref } from 'vue'
 import { useGetParkInfo, useInitBarChart, useInitPieChart } from './composables/bigscreen'
 import LoadingComponent from '@/components/LoadingComponent.vue'
+import VScaleScreen from 'v-scale-screen'
 // 1.导入echarts包
 // 2.获取要渲染的dom元素（准备好了宽高、并且已经渲染到页面中）
 // 3.把dom元素传入到echarts.init()  获取echarts实例
@@ -45,82 +46,84 @@ onMounted(async () => {
 
 
 <template>
-  <div class="all-charts">
-    <!-- 园区概况 -->
-    <div class="section-one" v-if="Object.keys(parkInfo).length > 0">
-      <img class="img-header"
-        src="https://yjy-teach-oss.oss-cn-beijing.aliyuncs.com/smartPark/%E5%A4%A7%E5%B1%8F%E5%88%87%E5%9B%BE/%E5%9B%AD%E5%8C%BA%E6%A6%82%E5%86%B5%402x.png"
-        alt="" />
-      <div class="icons-container">
-        <div class="item">
-          <div class="icons-item building-icon">
-            <span class="number">
-              <!-- 可选链 -->
-              <!-- {{ parkInfo.base?.buildingTotal }} -->
-              {{ parkInfo.base.buildingTotal }}
-            </span>
+  <VScaleScreen width="1920" height="1080">
+    <div class="all-charts">
+      <!-- 园区概况 -->
+      <div class="section-one" v-if="Object.keys(parkInfo).length > 0">
+        <img class="img-header"
+          src="https://yjy-teach-oss.oss-cn-beijing.aliyuncs.com/smartPark/%E5%A4%A7%E5%B1%8F%E5%88%87%E5%9B%BE/%E5%9B%AD%E5%8C%BA%E6%A6%82%E5%86%B5%402x.png"
+          alt="" />
+        <div class="icons-container">
+          <div class="item">
+            <div class="icons-item building-icon">
+              <span class="number">
+                <!-- 可选链 -->
+                <!-- {{ parkInfo.base?.buildingTotal }} -->
+                {{ parkInfo.base.buildingTotal }}
+              </span>
+            </div>
+            <span class="title">楼宇总数</span>
+            <span class="unity">（栋）</span>
           </div>
-          <span class="title">楼宇总数</span>
-          <span class="unity">（栋）</span>
-        </div>
-        <div class="item">
-          <div class="icons-item enterprise-icon">
-            <span class="number">
-              {{ parkInfo.base.enterpriseTotal }}
-            </span>
+          <div class="item">
+            <div class="icons-item enterprise-icon">
+              <span class="number">
+                {{ parkInfo.base.enterpriseTotal }}
+              </span>
+            </div>
+            <span class="title">入驻企业总数</span>
+            <span class="unity">（家）</span>
           </div>
-          <span class="title">入驻企业总数</span>
-          <span class="unity">（家）</span>
-        </div>
-        <div class="item">
-          <div class="icons-item car-icon">
-            <span class="number">
-              {{ parkInfo.base.parkingTotal }}
-            </span>
+          <div class="item">
+            <div class="icons-item car-icon">
+              <span class="number">
+                {{ parkInfo.base.parkingTotal }}
+              </span>
+            </div>
+            <span class="title">车位总数</span>
+            <span class="unity">（个）</span>
           </div>
-          <span class="title">车位总数</span>
-          <span class="unity">（个）</span>
-        </div>
-        <div class="item">
-          <div class="icons-item rod-icon">
-            <span class="number">
-              {{ parkInfo.base.chargePoleTotal }}
-            </span>
+          <div class="item">
+            <div class="icons-item rod-icon">
+              <span class="number">
+                {{ parkInfo.base.chargePoleTotal }}
+              </span>
+            </div>
+            <span class="title">一体杆总数</span>
+            <span class="unity">（个）</span>
           </div>
-          <span class="title">一体杆总数</span>
-          <span class="unity">（个）</span>
         </div>
       </div>
-    </div>
-    <!-- 园区年度收入分析 -->
-    <div class="section-two">
-      <img class="img-header"
-        src="https://yjy-teach-oss.oss-cn-beijing.aliyuncs.com/smartPark/%E5%A4%A7%E5%B1%8F%E5%88%87%E5%9B%BE/%E5%9B%AD%E5%8C%BA%E5%B9%B4%E5%BA%A6%E6%94%B6%E5%85%A5%E5%88%86%E6%9E%90%402x.png"
-        alt="" />
-      <div class="bar-chart-titile">
-        <span>单位：元</span>
-        <div>
-          <span class="bar-icon blue-bar-icon"></span>
-          <span class="bar-icon red-bar-icon"></span>
-          收入情况
+      <!-- 园区年度收入分析 -->
+      <div class="section-two">
+        <img class="img-header"
+          src="https://yjy-teach-oss.oss-cn-beijing.aliyuncs.com/smartPark/%E5%A4%A7%E5%B1%8F%E5%88%87%E5%9B%BE/%E5%9B%AD%E5%8C%BA%E5%B9%B4%E5%BA%A6%E6%94%B6%E5%85%A5%E5%88%86%E6%9E%90%402x.png"
+          alt="" />
+        <div class="bar-chart-titile">
+          <span>单位：元</span>
+          <div>
+            <span class="bar-icon blue-bar-icon"></span>
+            <span class="bar-icon red-bar-icon"></span>
+            收入情况
+          </div>
         </div>
+        <div class="bar-chart" ref="barChart"></div>
       </div>
-      <div class="bar-chart" ref="barChart"></div>
+      <!-- 园区产业分布 -->
+      <div class="section-three">
+        <img class="img-header"
+          src="https://yjy-teach-oss.oss-cn-beijing.aliyuncs.com/smartPark/%E5%A4%A7%E5%B1%8F%E5%88%87%E5%9B%BE/%E5%9B%AD%E5%8C%BA%E4%BA%A7%E4%B8%9A%E5%88%86%E5%B8%83%402x.png"
+          alt="" />
+        <div class="pie-chart" ref="pieChart"></div>
+      </div>
     </div>
-    <!-- 园区产业分布 -->
-    <div class="section-three">
-      <img class="img-header"
-        src="https://yjy-teach-oss.oss-cn-beijing.aliyuncs.com/smartPark/%E5%A4%A7%E5%B1%8F%E5%88%87%E5%9B%BE/%E5%9B%AD%E5%8C%BA%E4%BA%A7%E4%B8%9A%E5%88%86%E5%B8%83%402x.png"
-        alt="" />
-      <div class="pie-chart" ref="pieChart"></div>
+    <div class="model-container">
+      <!-- 进度条 -->
+      <LoadingComponent :loading="isLoading"></LoadingComponent>
+      <!-- 准备3D渲染节点 -->
+      <canvas class="canvas-3d" ref="ref3d" />
     </div>
-  </div>
-  <div class="model-container">
-    <!-- 进度条 -->
-    <LoadingComponent :loading="isLoading"></LoadingComponent>
-    <!-- 准备3D渲染节点 -->
-    <canvas class="canvas-3d" ref="ref3d" />
-  </div>
+  </VScaleScreen>
 </template>
 
 <style lang="scss" scoped>
